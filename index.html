@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>2027 奧捷10日旅遊 - 手機比較版 (支援雙團並排對決)</title>
+  <title>2027 歐洲旅遊17大精選行程</title>
   <style>
     :root {
       --bg: #f1f5f9;
@@ -19,7 +19,10 @@
       --ci-text: #9d174d;
       --jx-bg: #fef3c7;
       --jx-text: #92400e;
-      --success: #059669;
+      --br-bg: #dcfce7;
+      --br-text: #166534;
+      --cx-bg: #ccfbf1;
+      --cx-text: #115e59;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -27,7 +30,7 @@
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 85px;
+      padding-bottom: 90px;
     }
     .app-container {
       max-width: 600px;
@@ -42,8 +45,8 @@
       border-bottom-right-radius: 18px;
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
     }
-    header h1 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
-    header p { font-size: 0.8rem; color: #cbd5e1; }
+    header h1 { font-size: 1.18rem; font-weight: 800; margin-bottom: 4px; }
+    header p { font-size: 0.78rem; color: #cbd5e1; }
 
     /* 置頂控制面板 */
     .sticky-controls {
@@ -57,7 +60,7 @@
     }
     .mode-switch {
       display: grid;
-      grid-template-columns: 1fr 1fr 1.15fr;
+      grid-template-columns: 1fr 1fr 1.18fr;
       background: #e2e8f0;
       padding: 3px;
       border-radius: 10px;
@@ -68,7 +71,7 @@
       border: none;
       background: transparent;
       padding: 7px 4px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--muted);
       border-radius: 8px;
@@ -81,14 +84,27 @@
       color: var(--primary);
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
+    .search-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
     .search-input {
-      width: 100%;
-      padding: 8px 12px;
+      flex: 1;
+      padding: 7px 11px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.86rem;
+      font-size: 0.84rem;
       background: var(--card);
-      margin-bottom: 8px;
+    }
+    .region-select {
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--card);
+      color: var(--primary);
     }
     /* 橫向滑動快速標籤 */
     .chip-scroll {
@@ -101,9 +117,9 @@
     .chip-scroll::-webkit-scrollbar { display: none; }
     .chip {
       flex: 0 0 auto;
-      padding: 5px 12px;
+      padding: 5px 11px;
       border-radius: 999px;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 600;
       background: var(--card);
       color: var(--text);
@@ -123,28 +139,34 @@
       border-radius: 10px;
       padding: 8px 10px;
       margin-bottom: 4px;
+      max-height: 165px;
+      overflow-y: auto;
     }
     .selector-hint {
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      padding-bottom: 4px;
     }
     .selector-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
     }
     .check-pill {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 4px 10px;
+      padding: 4px 9px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
       border: 1.5px solid var(--border);
       background: #f8fafc;
@@ -160,14 +182,14 @@
       font-weight: 800;
     }
     .check-pill .dot {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 4px;
       border: 1.5px solid #94a3b8;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       background: #fff;
     }
     .check-pill.selected .dot {
@@ -203,6 +225,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge-group {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-wrap: wrap;
     }
     .badge {
       display: inline-block;
@@ -213,14 +243,17 @@
     }
     .badge-ci { background: var(--ci-bg); color: var(--ci-text); }
     .badge-jx { background: var(--jx-bg); color: var(--jx-text); }
-    
+    .badge-br { background: var(--br-bg); color: var(--br-text); }
+    .badge-cx { background: var(--cx-bg); color: var(--cx-text); }
+    .badge-region { background: #e0e7ff; color: #3730a3; }
+
     .compare-toggle-btn {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 4px 10px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 700;
       border: 1.5px solid var(--primary);
       background: #fff;
@@ -232,11 +265,11 @@
       color: #fff;
     }
 
-    .tour-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
-    .tour-code { font-size: 0.76rem; color: var(--muted); font-family: monospace; margin-bottom: 6px; }
-    .price-row { display: flex; align-items: baseline; gap: 8px; }
-    .price-main { font-size: 1.2rem; font-weight: 800; color: var(--price); }
-    .price-orig { font-size: 0.76rem; color: var(--muted); text-decoration: line-through; }
+    .tour-title { font-size: 1.02rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .tour-code { font-size: 0.75rem; color: var(--muted); font-family: monospace; margin-bottom: 6px; }
+    .price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .price-main { font-size: 1.15rem; font-weight: 800; color: var(--price); }
+    .price-orig { font-size: 0.75rem; color: var(--muted); }
 
     /* 卡片內部維度區塊 */
     .info-block {
@@ -247,12 +280,12 @@
       border-left: 3.5px solid var(--accent);
     }
     .info-label {
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent);
       margin-bottom: 4px;
     }
-    .info-block ul { padding-left: 16px; font-size: 0.85rem; }
+    .info-block ul { padding-left: 16px; font-size: 0.84rem; }
     .info-block li { margin-bottom: 3px; }
 
     .btn-link {
@@ -264,7 +297,7 @@
       text-decoration: none;
       padding: 9px;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 700;
       margin-top: 10px;
     }
@@ -278,7 +311,7 @@
       border: 1px solid var(--border);
     }
     .pk-title {
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       font-weight: 800;
       color: var(--primary);
       padding-bottom: 8px;
@@ -297,8 +330,9 @@
       margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
+      gap: 6px;
     }
-    .pk-content { font-size: 0.84rem; color: var(--text); padding-left: 16px; }
+    .pk-content { font-size: 0.83rem; color: var(--text); padding-left: 16px; }
 
     /* 雙團並排對比 (Side-by-Side 2-Column) */
     .sbs-header-grid {
@@ -307,7 +341,7 @@
       gap: 8px;
       margin-bottom: 12px;
       position: sticky;
-      top: 138px;
+      top: 165px;
       z-index: 90;
     }
     .sbs-top-card {
@@ -318,18 +352,18 @@
       box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2);
     }
     .sbs-top-card .sbs-name {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
       margin-bottom: 4px;
       line-height: 1.3;
     }
     .sbs-top-card .sbs-price {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 800;
       color: #fde047;
     }
     .sbs-top-card .sbs-code {
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       color: #cbd5e1;
       font-family: monospace;
     }
@@ -351,11 +385,10 @@
     .sbs-two-cols {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      divide-x: 1px solid var(--border);
     }
     .sbs-col {
       padding: 10px;
-      font-size: 0.8rem;
+      font-size: 0.79rem;
       border-right: 1px solid var(--border);
     }
     .sbs-col:last-child { border-right: none; }
@@ -381,11 +414,15 @@
       z-index: 200;
     }
     .floating-info {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 8px;
     }
     .floating-info span { color: #38bdf8; font-weight: 800; }
-    .floating-actions { display: flex; gap: 6px; }
+    .floating-actions { display: flex; gap: 6px; flex-shrink: 0; }
     .btn-go-compare {
       background: #0284c7;
       color: #fff;
@@ -420,7 +457,7 @@
       border: 1px solid var(--border);
     }
     .source-card h3 { font-size: 0.9rem; color: var(--primary); margin-bottom: 8px; }
-    .source-card ol { padding-left: 18px; font-size: 0.76rem; color: var(--muted); }
+    .source-card ol { padding-left: 18px; font-size: 0.74rem; color: var(--muted); }
     .source-card li { margin-bottom: 6px; word-break: break-all; }
     .source-card a { color: var(--accent); text-decoration: none; }
 
@@ -432,34 +469,34 @@
 
 <div class="app-container">
   <header>
-    <h1>2027 奧捷／捷克 10日遊比較</h1>
-    <p>手機直式版｜支援勾選 2 團並排 PK、單團卡片與維度總覽</p>
+    <h1>2027 歐洲 17 大精選行程比較</h1>
+    <p>涵蓋喜鴻、巨匠、可樂、加利利、雄獅｜支援勾選 2 團並排對決</p>
   </header>
 
   <div class="sticky-controls">
     <div class="mode-switch">
-      <button class="mode-btn active" id="btnModeTour" onclick="switchMode('tour')">依行程看 (5團)</button>
+      <button class="mode-btn active" id="btnModeTour" onclick="switchMode('tour')">依行程看 (17團)</button>
       <button class="mode-btn" id="btnModePK" onclick="switchMode('pk')">依項目比 (全部)</button>
       <button class="mode-btn" id="btnModeDual" onclick="switchMode('dual')">⚖️ 雙團並排 (<span id="dualCountBadge">2</span>/2)</button>
     </div>
 
-    <input type="text" class="search-input" id="searchInput" placeholder="輸入關鍵字高亮 (例: 國王湖、四季、米其林)..." oninput="runSearch()">
+    <div class="search-row">
+      <select class="region-select" id="regionFilter" onchange="applyFilters()">
+        <option value="all">🌍 全部路線 (17)</option>
+        <option value="奧捷/德捷/德奧捷/奧捷匈">🏰 奧捷/德/匈 (10)</option>
+        <option value="克斯/克斯奧/克斯蒙/匈克斯">🌊 克斯/奧/蒙/匈 (7)</option>
+      </select>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜尋關鍵字 (如: 新天鵝堡、杜布羅尼克、星宇)..." oninput="runSearch()">
+    </div>
 
     <!-- 依行程模式的快速跳轉列 -->
-    <div class="chip-scroll" id="tourChips">
-      <button class="chip active" onclick="filterTour('all', this)">全部 (5)</button>
-      <button class="chip" onclick="filterTour('t1', this)">1.加利利仙境(華航)</button>
-      <button class="chip" onclick="filterTour('t2', this)">2.布拉格四季7夜</button>
-      <button class="chip" onclick="filterTour('t3', this)">3.加利利仙境(星宇)</button>
-      <button class="chip" onclick="filterTour('t4', this)">4.加利利輝煌(星宇)</button>
-      <button class="chip" onclick="filterTour('t5', this)">5.雄獅星歐洲(星宇)</button>
-    </div>
+    <div class="chip-scroll" id="tourChips"></div>
 
     <!-- 依項目PK模式的分類篩選列 -->
     <div class="chip-scroll hidden" id="pkChips">
       <button class="chip active" onclick="filterPK('all', this)">全部維度</button>
       <button class="chip" onclick="filterPK('flight', this)">✈️ 航班與日期</button>
-      <button class="chip" onclick="filterPK('price', this)">💰 團費與方案</button>
+      <button class="chip" onclick="filterPK('price', this)">💰 團費與定位</button>
       <button class="chip" onclick="filterPK('itinerary', this)">🗺️ 行程路線</button>
       <button class="chip" onclick="filterPK('hotel', this)">🏨 飯店住宿</button>
       <button class="chip" onclick="filterPK('food', this)">🍽️ 特色餐飲</button>
@@ -468,7 +505,7 @@
     <!-- 雙團並排模式的勾選開關面板 -->
     <div class="compare-selector-box hidden" id="dualSelectorBox">
       <div class="selector-hint">
-        <span>請勾選任意 2 個行程進行左右並排比較：</span>
+        <span>點選任意 2 個行程進行左右並排 PK：</span>
         <span id="selectorStatusText">已選 2 / 2 團</span>
       </div>
       <div class="selector-grid" id="pillContainer"></div>
@@ -478,21 +515,15 @@
   <!-- 模式一：依行程看 (垂直卡片) -->
   <div class="content-area" id="viewTour"></div>
 
-  <!-- 模式二：依項目比 (5團維度PK) -->
+  <!-- 模式二：依項目比 (17團維度PK) -->
   <div class="content-area hidden" id="viewPK"></div>
 
   <!-- 模式三：勾選 2 團並排對比 (Side-by-Side) -->
   <div class="content-area hidden" id="viewDual"></div>
 
   <div class="source-card">
-    <h3>網頁資料來源註記</h3>
-    <ol>
-      <li>加利利 仙境10日(華航) AUP10270627C：<a href="https://www.galilee.com.tw/aup10_s_2/AUP10270627C" target="_blank">https://www.galilee.com.tw/aup10_s_2/AUP10270627C</a></li>
-      <li>加利利 布拉格四季10日 PRG10270618J：<a href="https://www.galilee.com.tw/prg10_f_1/PRG10270618J" target="_blank">https://www.galilee.com.tw/prg10_f_1/PRG10270618J</a></li>
-      <li>加利利 仙境10日(星宇) AUP10270618J：<a href="https://www.galilee.com.tw/aup10_s_2/AUP10270618J" target="_blank">https://www.galilee.com.tw/aup10_s_2/AUP10270618J</a></li>
-      <li>加利利 輝煌10日(星宇) AUP10270609J：<a href="https://www.galilee.com.tw/aup10_s_jx_1/AUP10270609J" target="_blank">https://www.galilee.com.tw/aup10_s_jx_1/AUP10270609J</a></li>
-      <li>雄獅 遇見星歐洲奧捷10日 27EE623JXP-T：<a href="https://travel.liontravel.com/detail?NormGroupID=94c2730e-04e3-4d27-9c69-5d001e3d30d1&GroupID=27EE623JXP-T&TourSource=Lion&Platform=APP" target="_blank">https://travel.liontravel.com/detail?NormGroupID=94c2730e-04e3-4d27-9c69-5d001e3d30d1&GroupID=27EE623JXP-T&TourSource=Lion&Platform=APP</a></li>
-    </ol>
+    <h3>網頁資料來源註記 (17大行程官方連結)</h3>
+    <ol id="sourceList"></ol>
   </div>
 </div>
 
@@ -511,94 +542,327 @@
   const tours = [
     {
       id: 't1',
-      pillLabel: '1.仙境(華航)',
-      shortName: '1. 加利利｜仙境10日(華航)',
-      title: '加利利｜奧捷仙境10日【印象系列】',
-      code: 'AUP10270627C',
-      badge: '中華航空直飛',
-      badgeClass: 'badge-ci',
-      price: 'NT$ 126,900',
-      origPrice: '原價 132,900',
-      flight: ['2027/06/27(日)～07/06(二)', '中華航空 (CI) 直飛維也納/布拉格，免轉機'],
-      priceDetail: ['特惠團 126,900 元（訂金 20,000 元）', '含雙首都舊城五星連泊與特色餐飲'],
-      itinerary: ['捷克：金色布拉格（古堡區、查理大橋、老城廣場）、庫倫洛夫', '奧地利：維也納首都巡禮、哈斯達特湖區仙境', '強調雙首都深度停留與自由活動時間'],
-      hotel: ['布拉格＋維也納「雙首都舊城區 5星飯店連泊」', '免去頻繁換宿，下樓即享古城夜景'],
-      food: ['布拉格「跳舞房子景觀餐廳」精緻料理', '奧捷雙國地方風味名菜與精選西式饗宴'],
-      url: 'https://www.galilee.com.tw/aup10_s_2/AUP10270627C'
+      pillLabel: '1.喜鴻奧捷(星宇)',
+      shortName: '1. 喜鴻｜遇見星歐洲．奧捷10日',
+      title: '喜鴻【遇見星歐洲．奧捷１０日】湖區真善美、國王湖上下湖、布拉格老城住宿、查理士橋畔餐廳',
+      code: 'CZV10JX270618PAKA',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '星宇直飛 (JX)',
+      badgeClass: 'badge-jx',
+      price: '約 NT$ 107,900 起',
+      origPrice: '2027/06/18 出發｜星宇PAK聯營',
+      flight: ['出發日期：2027/06/18 (共10天)', '星宇航空 (JX) 直飛布拉格進出，免轉機省時舒適'],
+      priceDetail: ['參考售價約 107,900 元起（依官網即時席次報價為準）', '《遇見星歐洲》星宇航空聯營精選高CP值團體'],
+      itinerary: ['奧地利湖區真善美巡禮（哈爾斯塔特、薩爾茲堡周邊）', '德國國王湖（含上下湖漫遊＋遊船體驗）', '捷克布拉格城堡區、老城廣場、庫倫洛夫紅頂小鎮'],
+      hotel: ['保證入住布拉格老城徒步區五星級飯店連泊', '搭配奧地利湖區或精選四至五星飯店'],
+      food: ['布拉格米其林推薦「查理士橋畔餐廳」西式饗宴', '湖區鮮魚料理、捷克傳統豬腳與地方風味餐'],
+      url: 'https://www.besttour.com.tw/itinerary/CZV10JX270618PAKA'
     },
     {
       id: 't2',
-      pillLabel: '2.布拉格四季',
-      shortName: '2. 加利利｜布拉格四季10日',
-      title: '加利利｜捷克布拉格四季飯店7夜10日',
-      code: 'PRG10270618J',
-      badge: '星宇時段/機票自理',
+      pillLabel: '2.喜鴻奧捷匈(星宇)',
+      shortName: '2. 喜鴻｜漫遊奧捷匈10日',
+      title: '喜鴻【漫遊奧捷匈１０日】三遊船、漁人堡、地下溶洞、布拉格城堡、米其林推薦、庫倫諾夫',
+      code: 'EUK10JX270618J',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '星宇直飛 (JX)',
       badgeClass: 'badge-jx',
-      price: 'NT$ 99,900',
-      origPrice: '原價 103,900 (不含機票)',
-      flight: ['2027/06/18(五)～06/27(日)', '機票自理方案（推薦搭配星宇直飛布拉格，適合哩程換票或自購商務艙）'],
-      priceDetail: ['特惠團 99,900 元（機票自理，訂金 20,000 元）', '預算集中於連住7晚全球頂級四季飯店'],
-      itinerary: ['純捷克單國深度慢遊，免跨國長途拉車', '布拉格古皇宮城堡區、查理大橋（距飯店僅300秒步程）、天文鐘', '庫倫洛夫紅頂小鎮、庫特納霍拉銀礦小鎮'],
-      hotel: ['布拉格四季飯店 (Four Seasons Prague) 7夜連泊', '富比士5星＆AAA 5鑽最高榮譽，步行5分鐘上查理大橋'],
-      food: ['四季飯店內尊貴饗宴（賞首都河畔市容）', '跳舞房子景觀餐廳、道地捷克烤鴨、波西米亞豬腳佐啤酒'],
-      url: 'https://www.galilee.com.tw/prg10_f_1/PRG10270618J'
+      price: '約 NT$ 105,900～112,900 起',
+      origPrice: '2027/06/18 出發｜東歐三國全覽',
+      flight: ['出發日期：2027/06/18 (共10天)', '星宇航空 (JX) 直飛布拉格航線，暢遊奧捷匈三國'],
+      priceDetail: ['參考售價約 105,900～112,900 元起（依官網即時報價為準）', '一次涵蓋三大名城與三遊船門票體驗'],
+      itinerary: ['浪漫三遊船體驗（多瑙河遊船、伏爾他瓦河遊船、地下溶洞湖遊船）', '匈牙利：布達佩斯漁人堡、國會大廈景觀', '捷克與奧地利：布拉格城堡、庫倫諾夫、維也納與卡斯特地下溶洞'],
+      hotel: ['奧捷匈三國精選四至五星級舒適飯店', '布拉格或布達佩斯核心城區優質住宿安排'],
+      food: ['特別安排米其林推薦餐廳精緻料理', '匈牙利燉牛肉風味餐、波西米亞烤鴨與奧式肋排料理'],
+      url: 'https://www.besttour.com.tw/itinerary/EUK10JX270618J'
     },
     {
       id: 't3',
-      pillLabel: '3.仙境(星宇)',
-      shortName: '3. 加利利｜仙境10日(星宇)',
-      title: '加利利｜奧捷仙境10日【印象系列】',
-      code: 'AUP10270618J',
-      badge: '星宇航空直飛',
-      badgeClass: 'badge-jx',
-      price: 'NT$ 116,900～126,900',
-      origPrice: '原價 125,900～132,900',
-      flight: ['2027/06/18(五)～06/27(日)', '星宇航空 (JX) 直飛布拉格，可提前60日洽詢加價升等商務艙'],
-      priceDetail: ['依仙境夏季星宇班次定價（訂金 20,000 元）', '兼具星宇新機體驗與雙首都五星連泊'],
-      itinerary: ['與 06/27 華航團同屬【仙境10日】雙首都慢遊架構', '捷克：布拉格深度連泊、庫倫洛夫', '奧地利：維也納、哈斯達特湖區仙境'],
-      hotel: ['布拉格＋維也納「雙首都舊城區 5星飯店連泊」', '位於舊城精華地段，逛街與夜拍極便利'],
-      food: ['布拉格「跳舞房子景觀餐廳」精緻料理', '奧捷雙國地方風味名菜與精選西式饗宴'],
-      url: 'https://www.galilee.com.tw/aup10_s_2/AUP10270618J'
+      pillLabel: '3.喜鴻克斯10日(長榮)',
+      shortName: '3. 喜鴻｜樂遊秘境克斯10日',
+      title: '喜鴻【樂遊秘境克斯１０日】手搖船、絕美十六湖、城堡纜車、鐘乳石洞小火車、戴克里先宮',
+      code: 'CRA10BR270629H',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '長榮直飛 (BR)',
+      badgeClass: 'badge-br',
+      price: '約 NT$ 99,900～108,900 起',
+      origPrice: '2027/06/29 出發｜巴爾幹雙國',
+      flight: ['出發日期：2027/06/29 (共10天)', '長榮航空 (BR) 直飛維也納進出，順暢銜接斯洛維尼亞與克羅埃西亞'],
+      priceDetail: ['參考售價約 99,900～108,900 元起（依官網即時報價為準）', '包含國家公園門票、鐘乳石洞小火車、手搖船與纜車'],
+      itinerary: ['斯洛維尼亞：布雷德湖傳統「手搖船 (Pletna)」、盧比安納城堡纜車、波斯托伊納鐘乳石洞電動小火車', '克羅埃西亞：世界遺產「普利特維斯十六湖國家公園」、斯普利特「戴克里先宮」古羅馬遺跡'],
+      hotel: ['克斯雙國國家公園周邊及亞得里亞海濱精選飯店', '舒適四至五星渡假與市區飯店配置'],
+      food: ['亞得里亞海鮮料理、十六湖烤乳豬風味餐', '布雷德湖招牌奶油蛋糕下午茶或湖畔料理'],
+      url: 'https://www.besttour.com.tw/itinerary/CRA10BR270629H'
     },
     {
       id: 't4',
-      pillLabel: '4.輝煌(星宇)',
-      shortName: '4. 加利利｜輝煌10日(星宇)',
-      title: '加利利｜奧捷輝煌10日【臻選系列】',
-      code: 'AUP10270609J',
-      badge: '星宇航空直飛',
-      badgeClass: 'badge-jx',
-      price: 'NT$ 129,900',
-      origPrice: '原價 135,900',
-      flight: ['2027/06/09(三)～06/18(五)', '星宇航空 (JX) 直飛布拉格，可加價升等商務艙'],
-      priceDetail: ['特惠團 129,900 元（訂金 20,000 元）', '臻選系列：涵蓋德奧捷三國湖區與名城'],
-      itinerary: ['德國：跨入德南遊覽絕美「國王湖 (Königssee)」', '奧地利：哈斯達特仙境、維也納首都巡禮', '捷克：金色布拉格、庫倫洛夫'],
-      hotel: ['布拉格奢雅飯店連泊', '搭配奧地利湖區及維也納精選飯店住宿'],
-      food: ['奧捷經典地方料理與湖區鮮魚風味餐', '布拉格精選景觀或名廚西式饗宴'],
-      url: 'https://www.galilee.com.tw/aup10_s_jx_1/AUP10270609J'
+      pillLabel: '4.巨匠德奧捷10日(華航)',
+      shortName: '4. 巨匠｜華麗歐洲德奧捷10日',
+      title: '巨匠【華麗歐洲】德奧捷10日',
+      code: 'APECI1070622VIE',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '華航直飛 (CI)',
+      badgeClass: 'badge-ci',
+      price: '約 NT$ 115,900～125,900 起',
+      origPrice: '2027/06/22 出發｜維也納進出',
+      flight: ['出發日期：2027/06/22 (共10天)', '中華航空 (CI) 直飛維也納 (VIE) 航線，免轉機'],
+      priceDetail: ['參考售價約 115,900～125,900 元起（依巨匠官網即時報價為準）', '經典德南阿爾卑斯＋奧地利湖區＋捷克古堡路線'],
+      itinerary: ['德國：巴伐利亞阿爾卑斯名勝（國王湖／鹽礦區）', '奧地利：維也納音樂之都、薩爾茲堡、哈爾斯塔特湖區', '捷克：布拉格古堡區與查理大橋、庫倫洛夫世界遺產'],
+      hotel: ['德奧捷精選四至五星級飯店與布拉格連泊安排', '湖區或山城特色旅館體驗'],
+      food: ['德式豬腳佐啤酒、奧地利維也納炸豬排風味餐', '捷克波西米亞烤鴨與湖區鱒魚料理'],
+      url: 'https://www.artisan.com.tw/TripIntroduction.aspx?TripNo=T20250210000001&Date=2027/06/22&type=CI&GropNumb=APECI1070622VIE'
     },
     {
       id: 't5',
-      pillLabel: '5.雄獅(星宇)',
-      shortName: '5. 雄獅｜遇見星歐洲10日',
-      title: '雄獅｜遇見星歐洲奧捷10日 (國王湖上下湖)',
+      pillLabel: '5.巨匠奧捷11日(華航)',
+      shortName: '5. 巨匠｜金色夢幻奧捷11天',
+      title: '巨匠【金色夢幻】 奧地利．捷克11天',
+      code: 'AAECI1170622PRG',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '華航直飛 (CI)',
+      badgeClass: 'badge-ci',
+      price: '約 NT$ 126,900～136,900 起',
+      origPrice: '2027/06/22 出發｜11天深度雙點',
+      flight: ['出發日期：2027/06/22 (共11天)', '中華航空 (CI) 直飛布拉格 (PRG)／維也納雙點進出，不走回頭路'],
+      priceDetail: ['參考售價約 126,900～136,900 元起（依官網即時報價為準）', '比一般10日團多1天，雙首都與湖區停留更從容'],
+      itinerary: ['捷克深度：布拉格城堡、查理大橋、卡羅維瓦利溫泉鄉、庫倫洛夫', '奧地利深度：哈爾斯塔特真善美湖區、薩爾茲堡、維也納熊布朗宮與市區名勝'],
+      hotel: ['布拉格與維也納五星級飯店連泊規劃', '湖區或庫倫洛夫特色城鎮住宿體驗'],
+      food: ['米其林推薦或高帽評鑑餐廳西式料理', '雙首都景觀餐廳、豬腳、烤鴨與肋排全覽'],
+      url: 'https://www.artisan.com.tw/TripIntroduction.aspx?TripNo=T20261012000002&Date=2027/06/22&type=CI&GropNumb=AAECI1170622PRG'
+    },
+    {
+      id: 't6',
+      pillLabel: '6.巨匠閃耀奧捷10日(星宇)',
+      shortName: '6. 巨匠｜新視界閃耀奧捷10天',
+      title: '巨匠【新視界假期】 閃耀奧地利・浪漫捷克10天',
+      code: 'ANEJX1070623PRG',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '星宇直飛 (JX)',
+      badgeClass: 'badge-jx',
+      price: '約 NT$ 109,900～119,900 起',
+      origPrice: '2027/06/23 出發｜星宇布拉格直飛',
+      flight: ['出發日期：2027/06/23 (共10天)', '星宇航空 (JX) 桃園直飛布拉格 (PRG) 航線'],
+      priceDetail: ['參考售價約 109,900～119,900 元起（依官網即時報價為準）', '巨匠《新視界假期》系列，精選奧捷精華與星宇新機'],
+      itinerary: ['捷克：金色布拉格（古堡、老城廣場、伏爾他瓦河）、庫倫洛夫童話小鎮', '奧地利：哈爾斯塔特湖區、薩爾茲堡、維也納宮殿巡禮'],
+      hotel: ['布拉格五星級飯店連泊＋奧地利精選四至五星飯店', '兼顧交通便利與住宿品質'],
+      food: ['布拉格特色餐廳、捷克傳統烤鴨與豬腳風味餐', '奧地利湖區鮮魚料理與維也納特色餐'],
+      url: 'https://www.artisan.com.tw/TripIntroduction.aspx?TripNo=T20260515000007&Date=2027/06/23&type=JX&GropNumb=ANEJX1070623PRG'
+    },
+    {
+      id: 't7',
+      pillLabel: '7.巨匠匈克斯10日(華航)',
+      shortName: '7. 巨匠｜樂遊美地匈克斯10天',
+      title: '巨匠【樂遊美地】 匈牙利．克羅埃西亞．斯洛文尼亞10天',
+      code: 'AAECI1070623VIE1',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '華航直飛 (CI)',
+      badgeClass: 'badge-ci',
+      price: '約 NT$ 106,900～116,900 起',
+      origPrice: '2027/06/23 出發｜巴爾幹＋匈牙利',
+      flight: ['出發日期：2027/06/23 (共10天)', '中華航空 (CI) 直飛維也納 (VIE)，順遊匈牙利、克羅埃西亞與斯洛維尼亞'],
+      priceDetail: ['參考售價約 106,900～116,900 元起（依官網即時報價為準）', '一次收集多瑙河明珠布達佩斯＋十六湖＋布雷德湖'],
+      itinerary: ['匈牙利：布達佩斯（多瑙河遊船、漁人堡、英雄廣場）', '克羅埃西亞：普利特維斯十六湖國家公園、札格雷布首都巡禮', '斯洛維尼亞：布雷德湖、波斯托伊納鐘乳石洞'],
+      hotel: ['三國精選四至五星飯店與國家公園周邊舒適住宿', '免除舟車勞頓的順暢環線配房'],
+      food: ['匈牙利鵝肝或燉牛肉風味餐、克羅埃西亞烤乳豬', '斯洛維尼亞布雷德湖畔料理與海鮮餐'],
+      url: 'https://www.artisan.com.tw/TripIntroduction.aspx?TripNo=T20241119000007&Date=2027/06/23&type=CI&GropNumb=AAECI1070623VIE1'
+    },
+    {
+      id: 't8',
+      pillLabel: '8.巨匠克斯10日(華航)',
+      shortName: '8. 巨匠｜悠遊斯洛文尼亞．克羅埃西亞10天',
+      title: '巨匠【悠遊】 斯洛文尼亞．克羅埃西亞 10天',
+      code: 'AAECI1070623VIE',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '華航直飛 (CI)',
+      badgeClass: 'badge-ci',
+      price: '約 NT$ 105,900～115,900 起',
+      origPrice: '2027/06/23 出發｜純克斯雙國深度',
+      flight: ['出發日期：2027/06/23 (共10天)', '中華航空 (CI) 直飛維也納 (VIE)，專注斯洛維尼亞與克羅埃西亞雙國'],
+      priceDetail: ['參考售價約 105,900～115,900 元起（依官網即時報價為準）', '專注雙國自然奇景與亞得里亞海古城，拉車時間更精簡'],
+      itinerary: ['斯洛維尼亞：布雷德湖手搖船與湖心島、波斯托伊納鐘乳石洞、盧比安納', '克羅埃西亞：十六湖國家公園（上下湖區）、札達爾海風琴、斯普利特戴克里先宮'],
+      hotel: ['克斯雙國國家公園區及海濱渡假飯店', '嚴選四至五星級優質住宿'],
+      food: ['亞得里亞海烤章魚／海鮮餐、十六湖區傳統烤羊肉或乳豬', '布雷德奶油蛋糕與道地西式料理'],
+      url: 'https://www.artisan.com.tw/TripIntroduction.aspx?TripNo=T20260929000003&Date=2027/06/23&type=CI&GropNumb=AAECI1070623VIE'
+    },
+    {
+      id: 't9',
+      pillLabel: '9.可樂醉戀奧捷10日(長榮)',
+      shortName: '9. 可樂｜醉戀奧捷10日',
+      title: '可樂【醉戀奧捷】湖區真善美、國王湖鹽礦探秘、三晚星選住宿、查理士橋畔餐廳10日',
+      code: 'EED061810BR7',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '長榮直飛 (BR)',
+      badgeClass: 'badge-br',
+      price: '約 NT$ 108,900～118,900 起',
+      origPrice: '2027/06/18 出發｜長榮維也納直飛',
+      flight: ['出發日期：2027/06/18 (共10天)', '長榮航空 (BR) 直飛維也納航線'],
+      priceDetail: ['參考售價約 108,900～118,900 元起（依可樂官網即時報價為準）', '主打三晚星選住宿＋國王湖＋鹽礦＋米其林推薦餐廳'],
+      itinerary: ['奧地利湖區真善美（哈爾斯塔特、薩爾茲堡）、古老鹽礦探秘體驗', '德國國王湖遊船巡禮', '捷克布拉格古堡區、查理大橋、庫倫洛夫童話小鎮'],
+      hotel: ['安排「三晚星選住宿」（含布拉格五星連泊或湖區星級住宿）', '全線嚴選四至五星舒適飯店'],
+      food: ['米其林推薦「查理士橋畔餐廳」西餐', '湖區鱒魚風味餐、中世紀晚宴與捷克豬腳料理'],
+      url: 'https://tour.colatour.com.tw/itinerary?TourCode=EED061810BR7&TourDate=2027/06/18'
+    },
+    {
+      id: 't10',
+      pillLabel: '10.可樂璀璨克斯蒙12日',
+      shortName: '10. 可樂｜璀璨克斯蒙12日 (5晚五星)',
+      title: '可樂【璀璨克斯蒙、早鳥最高省6000】三大國家公園、兩大景觀纜車、哈瓦島渡假村、五晚五星飯店12日',
+      code: 'COLA-KSM12D',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '直飛歐洲航線',
+      badgeClass: 'badge-region',
+      price: '約 NT$ 135,900～149,900 起',
+      origPrice: '早鳥最高省6,000｜12天巴爾幹三國旗艦',
+      flight: ['天數：12日深度之旅（克羅埃西亞、斯洛維尼亞、蒙特內哥羅）', '搭配歐籍或國籍航空直飛維也納／鄰近航點'],
+      priceDetail: ['參考售價約 135,900～149,900 元起（享有早鳥最高省 6,000 元優惠）', '高規格旗艦團：涵蓋三大國家公園、跳島渡假村與5晚五星飯店'],
+      itinerary: ['三大國家公園：十六湖國家公園、科卡國家公園、杜米托爾（或科托爾峽灣區）', '兩大景觀纜車：杜布羅夫尼克景觀纜車、盧比安納城堡纜車', '陽光跳島體驗：入住「哈瓦島 (Hvar) 渡假村」並延伸至蒙特內哥羅（黑山共和國）'],
+      hotel: ['保證入住「五晚五星級飯店」＋「哈瓦島渡假村」', '杜布羅夫尼克與國家公園高規格住宿體驗'],
+      food: ['杜布羅夫尼克古城景觀餐廳、亞得里亞海龍蝦／海鮮饗宴', '黑山峽灣料理與國家公園傳統風味餐'],
+      url: 'https://tour.colatour.com.tw/error?correlationId=c1d4d7cd-b01c-419e-b676-6fc49f95344e&requestId=2026110209254104480806'
+    },
+    {
+      id: 't11',
+      pillLabel: '11.可樂濃情匈牙利10日(長榮)',
+      shortName: '11. 可樂｜濃情匈牙利．奧捷匈10日',
+      title: '可樂【濃情匈牙利】最美布達佩斯、多瑙河騎士秀、卡斯特溶洞湖、維也納熊布朗宮10日',
+      code: 'EED062110BR7',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '長榮直飛 (BR)',
+      badgeClass: 'badge-br',
+      price: '約 NT$ 99,900～109,900 起',
+      origPrice: '2027/06/21 出發｜長榮維也納直飛',
+      flight: ['出發日期：2027/06/21 (共10天)', '長榮航空 (BR) 直飛維也納，暢遊匈牙利、奧地利與捷克'],
+      priceDetail: ['參考售價約 99,900～109,900 元起（依可樂官網即時報價為準）', '深度聚焦布達佩斯馬術／騎士秀與摩拉維亞卡斯特溶洞'],
+      itinerary: ['匈牙利：最美布達佩斯（多瑙河遊船、漁人堡）、傳統多瑙河騎士秀／馬術表演', '捷克：摩拉維亞「卡斯特溶洞湖 (Punkevní)」遊船、布拉格古堡與老城', '奧地利：維也納熊布朗宮（美泉宮）入內參觀與市區巡禮'],
+      hotel: ['布達佩斯、維也納與布拉格精選四至五星級飯店', '市區或交通便利星級旅館安排'],
+      food: ['匈牙利傳統鵝肝與Goulash燉牛肉餐、騎士秀莊園風味餐', '維也納豬肋排與捷克地窖烤鴨餐'],
+      url: 'https://tour.colatour.com.tw/itinerary?TourCode=EED062110BR7&TourDate=2027/06/21'
+    },
+    {
+      id: 't12',
+      pillLabel: '12.可樂最愛克斯10日(華航)',
+      shortName: '12. 可樂｜最愛克羅埃西亞．斯洛維尼亞10日',
+      title: '可樂【最愛克羅埃西亞～斯洛維尼亞】、鐘乳石洞探秘、十六湖國家公園、漫步布雷德、世界遺產旅行10日',
+      code: 'EKC062110CI7',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '華航直飛 (CI)',
+      badgeClass: 'badge-ci',
+      price: '約 NT$ 102,900～112,900 起',
+      origPrice: '2027/06/21 出發｜華航維也納直飛',
+      flight: ['出發日期：2027/06/21 (共10天)', '中華航空 (CI) 直飛維也納，經典克斯10日世界遺產路線'],
+      priceDetail: ['參考售價約 102,900～112,900 元起（依可樂官網即時報價為準）', '涵蓋波斯托伊納鐘乳石洞、十六湖與亞得里亞海世界遺產古城'],
+      itinerary: ['斯洛維尼亞：漫步布雷德湖（手搖船登島）、波斯托伊納鐘乳石洞小火車探秘', '克羅埃西亞：普利特維斯十六湖國家公園、希貝尼克／斯普利特／杜布羅夫尼克或札達爾世界遺產巡禮'],
+      hotel: ['國家公園區精選旅館與亞得里亞海岸渡假飯店', '全程四至五星舒適住宿'],
+      food: ['克羅埃西亞烤乳豬、亞得里亞海鮮魚料理', '布雷德湖奶油蛋糕與松露風味義大利麵'],
+      url: 'https://tour.colatour.com.tw/itinerary?TourCode=EKC062110CI7&TourDate=2027/06/21'
+    },
+    {
+      id: 't13',
+      pillLabel: '13.加利利奧捷仙境(星宇)',
+      shortName: '13. 加利利｜奧捷仙境10日 (星宇)',
+      title: '加利利【奧地利捷克．仙境10日(夏季) 】AUP10270618J',
+      code: 'AUP10270618J',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '星宇直飛 (JX)',
+      badgeClass: 'badge-jx',
+      price: 'NT$ 116,900～126,900',
+      origPrice: '2027/06/18 出發｜雙首都舊城5星連泊',
+      flight: ['出發日期：2027/06/18 (五) ～ 06/27 (日) 共10天', '星宇航空 (JX) 直飛布拉格，可於出發前60日洽詢加價升等商務艙'],
+      priceDetail: ['特惠團約 116,900～126,900 元（原價 125,900～132,900 元，訂金 20,000 元）', '加利利【印象系列】高質感慢遊，保證雙首都舊城五星連泊'],
+      itinerary: ['捷克：金色布拉格深度連泊（古堡區、查理大橋、老城廣場）、庫倫洛夫夢幻紅頂小鎮', '奧地利：維也納首都巡禮、哈斯達特湖區仙境', '減少拉車、預留充裕雙首都自由探索時光'],
+      hotel: ['保證「布拉格＋維也納 雙首都舊城區 5星飯店連泊」', '地處古城核心，步行即可夜拍與逛街'],
+      food: ['布拉格「跳舞房子 (Dancing House) 景觀餐廳」精緻料理', '奧捷雙國地方風味名菜與精選西式饗宴'],
+      url: 'https://www.galilee.com.tw/aup10_s_2/AUP10270618J'
+    },
+    {
+      id: 't14',
+      pillLabel: '14.雄獅遇見星歐洲(星宇)',
+      shortName: '14. 雄獅｜遇見星歐洲奧捷10日',
+      title: '雄獅【遇見星歐洲、奧捷】直飛布拉格、湖區真善美、國王湖上下湖、布拉格老城住宿、查理士橋畔餐廳10日（27EE623JXP-T）',
       code: '27EE623JXP-T',
-      badge: '星宇航空直飛',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '星宇直飛 (JX)',
       badgeClass: 'badge-jx',
       price: 'NT$ 107,900 起',
-      origPrice: '高CP值全包式聯營團',
-      flight: ['2027/06/23(三) 出發 (共10天)', '星宇航空桃園直飛布拉格 (去13h10m/回11h45m)，可加3.5萬起升等豪經艙'],
-      priceDetail: ['售價 107,900 元起', '含導覽耳機、行李束帶、轉接頭及豐富門票船票'],
-      itinerary: ['囊括19個景點、8個世界遺產', '德國國王湖（上下湖漫遊＋遊船）、古老鹽礦（小火車+溜滑梯+木船）', '哈爾斯塔特（含天空步道）、維也納雙宮殿（熊布朗宮22房+貝爾維第宮）、布拉格遊船'],
-      hotel: ['布拉格老城徒步區五星飯店（連泊2晚）', '薩爾斯甘瑪格特湖區飯店（1晚）＋四至五星精選'],
-      food: ['查理士橋畔餐廳（2012-2017長年米其林推薦西餐）', '中世紀風味晚宴、湖區鱒魚料理、三種肉類拼盤(雞/豬/牛)'],
+      origPrice: '2027/06/23 出發｜19景點+8世界遺產',
+      flight: ['出發日期：2027/06/23 (三) 出發 (共10天)', '星宇航空 (JX) 桃園直飛布拉格 (去13h10m/回11h45m)，可加3.5萬起升等豪經艙'],
+      priceDetail: ['售價 107,900 元起（含導覽耳機、行李束帶、歐規轉接頭）', '門票與遊船全包式高CP值星宇直飛團'],
+      itinerary: ['囊括19個主要景點、8個世界遺產', '德國國王湖（上下湖漫遊＋遊船）、古老鹽礦（小火車+溜滑梯+木船）', '哈爾斯塔特（含天空步道）、維也納雙宮殿（熊布朗宮22房導覽+貝爾維第宮）、特爾奇、布拉格伏爾他瓦河遊船'],
+      hotel: ['保證入住「布拉格老城徒步區五星飯店（連泊2晚）」', '薩爾斯甘瑪格特湖區飯店（1晚）＋四至五星精選住宿'],
+      food: ['查理士橋畔餐廳（2012-2017長年米其林推薦西餐）', '中世紀風味晚宴、湖區鱒魚料理、三種肉類拼盤（雞/豬/牛）'],
       url: 'https://travel.liontravel.com/detail?NormGroupID=94c2730e-04e3-4d27-9c69-5d001e3d30d1&GroupID=27EE623JXP-T&TourSource=Lion&Platform=APP'
+    },
+    {
+      id: 't15',
+      pillLabel: '15.雄獅克斯奧10日(長榮)',
+      shortName: '15. 雄獅｜克斯奧10日 (十六湖/布雷德湖)',
+      title: '雄獅【克斯奧10日】夢幻十六湖,布雷德湖,鹽湖,波斯托伊納鐘乳石洞,小威尼斯,小羅馬',
+      code: '27EE624BR-T',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '長榮直飛 (BR)',
+      badgeClass: 'badge-br',
+      price: '約 NT$ 99,900～109,900 起',
+      origPrice: '2027/06/24 出發｜伊斯特利亞半島秘境',
+      flight: ['出發日期：2027/06/24 (四) 出發 (共10天)', '長榮航空 (BR) 直飛維也納進出，順遊克羅埃西亞、斯洛維尼亞與奧地利'],
+      priceDetail: ['參考售價約 99,900～109,900 元起（依雄獅官網即時報價為準）', '獨具伊斯特利亞半島「小威尼斯、小羅馬」與海濱鹽田風光'],
+      itinerary: ['克羅埃西亞：夢幻普利特維斯十六湖國家公園、「小威尼斯」羅維尼 (Rovinj)、「小羅馬」普拉 (Pula 古羅馬競技場)', '斯洛維尼亞：布雷德湖、波斯托伊納鐘乳石洞、皮蘭 (Piran) 鹽湖風光與盧比安納', '奧地利：維也納／格拉茨順遊巡禮'],
+      hotel: ['克羅埃西亞與斯洛維尼亞海濱及國家公園周邊精選四至五星飯店', '舒適環線配房，減少長途折返'],
+      food: ['伊斯特利亞半島海鮮料理、十六湖烤乳豬風味餐', '布雷德湖奶油蛋糕與奧地利特色西餐'],
+      url: 'https://travel.liontravel.com/detail?NormGroupID=d2780cfd-a66e-4393-b792-d7637e9ac126&GroupID=27EE624BR-T&TourSource=Lion&Platform=APP&position=11'
+    },
+    {
+      id: 't16',
+      pillLabel: '16.雄獅經典德捷10日(國泰)',
+      shortName: '16. 雄獅｜經典德國捷克10日 (新天鵝堡)',
+      title: '雄獅【經典德國捷克旅遊】布拉格城堡．新天鵝堡．童話古鎮．溫泉小鎮．二晚五星．米其林美食10日',
+      code: '27EE703CXK-T',
+      region: '奧捷/德捷/德奧捷/奧捷匈',
+      badge: '國泰航空 (CX)',
+      badgeClass: 'badge-cx',
+      price: '約 NT$ 96,900～106,900 起',
+      origPrice: '2027/07/03 出發｜新天鵝堡+羅騰堡+布拉格',
+      flight: ['出發日期：2027/07/03 (六) 出發 (共10天)', '國泰航空 (CX) 歐洲雙點／法蘭克福或慕尼黑搭配航點，暢遊德國與捷克'],
+      priceDetail: ['參考售價約 96,900～106,900 元起（依雄獅官網即時報價為準）', '唯一涵蓋德國「新天鵝堡＋羅曼蒂克大道童話古鎮」與捷克古堡雙國經典'],
+      itinerary: ['德國：夢幻「新天鵝堡」、羅曼蒂克大道童話古鎮（羅騰堡／紐倫堡／慕尼黑）', '捷克：布拉格城堡、查理大橋、老城廣場、卡羅維瓦利溫泉小鎮'],
+      hotel: ['保證入住「二晚五星級飯店」（布拉格五星連泊）', '搭配德國童話古鎮及巴伐利亞精選四星級飯店'],
+      food: ['特別安排「米其林推薦美食餐廳」饗宴', '德國傳統豬腳佐啤酒、捷克波西米亞烤鴨與溫泉鄉風味餐'],
+      url: 'https://travel.liontravel.com/detail?NormGroupID=783c7f97-ba7c-41ec-8c36-fa9a2876f79a&GroupID=27EE703CXK-T&TourSource=Lion&Platform=APP'
+    },
+    {
+      id: 't17',
+      pillLabel: '17.雄獅克羅埃西亞10日(華航)',
+      shortName: '17. 雄獅｜克羅埃西亞10日 (杜布羅尼克)',
+      title: '雄獅【克羅埃西亞10日】杜布羅尼克,十六湖,布雷德湖,戴克里仙宮,札格雷布',
+      code: '27EE621CI-T',
+      region: '克斯/克斯奧/克斯蒙/匈克斯',
+      badge: '華航直飛 (CI)',
+      badgeClass: 'badge-ci',
+      price: '約 NT$ 104,900～114,900 起',
+      origPrice: '2027/06/21 出發｜深入南端杜布羅尼克',
+      flight: ['出發日期：2027/06/21 (一) 出發 (共10天)', '中華航空 (CI) 直飛維也納進出，一路縱貫至克羅埃西亞最南端杜布羅夫尼克'],
+      priceDetail: ['參考售價約 104,900～114,900 元起（依雄獅官網即時報價為準）', '10天完整收錄「亞得里亞海明珠－杜布羅尼克」與斯普利特、十六湖'],
+      itinerary: ['克羅埃西亞全覽：杜布羅尼克（古城牆巡禮）、斯普利特（戴克里仙宮）、普利特維斯十六湖國家公園、首都札格雷布', '斯洛維尼亞：布雷德湖漫步與湖心島風光'],
+      hotel: ['杜布羅尼克海濱區、十六湖國家公園周邊及各大古城四至五星精選飯店', '南北縱貫動線順暢配房'],
+      food: ['杜布羅尼克亞得里亞海特色海鮮餐、十六湖烤乳豬料理', '布雷德湖奶油蛋糕與巴爾幹傳統燒烤風味餐'],
+      url: 'https://travel.liontravel.com/detail?NormGroupID=b0b4f53f-2288-4369-92d7-6467657467d3&GroupID=27EE621CI-T&TourSource=Lion&Platform=APP'
     }
   ];
 
-  // 預設勾選第 3 團 (加利利仙境星宇) 與 第 5 團 (雄獅星宇) 方便直接預覽並排效果
-  let selectedIds = ['t3', 't5'];
+  // 預設勾選第 14 團 (雄獅星宇奧捷) 與 第 16 團 (雄獅經典德捷) 方便直接預覽雙團 PK
+  let selectedIds = ['t14', 't16'];
   let currentMode = 'tour';
+  let activeTourFilter = 'all';
+
+  function initChipsAndSources() {
+    const chipContainer = document.getElementById('tourChips');
+    chipContainer.innerHTML = `<button class="chip active" onclick="filterTour('all', this)">全部顯示 (17)</button>` +
+      tours.map(t => `<button class="chip" data-chip-region="${t.region}" onclick="filterTour('${t.id}', this)">${t.pillLabel}</button>`).join('');
+
+    const sourceList = document.getElementById('sourceList');
+    sourceList.innerHTML = tours.map(t => `
+      <li>${t.title} (${t.code})：<a href="${t.url}" target="_blank">${t.url}</a></li>
+    `).join('');
+  }
 
   function toggleSelectTour(id) {
     const idx = selectedIds.indexOf(id);
@@ -606,7 +870,6 @@
       selectedIds.splice(idx, 1);
     } else {
       if (selectedIds.length >= 2) {
-        // 若已滿2個，自動替換最早選的那個，讓單手操作更順暢
         selectedIds.shift();
       }
       selectedIds.push(id);
@@ -620,11 +883,9 @@
   }
 
   function updateSelectionUI() {
-    // 更新頂部徽章與文字
     document.getElementById('dualCountBadge').innerText = selectedIds.length;
     document.getElementById('selectorStatusText').innerText = `已選 ${selectedIds.length} / 2 團`;
 
-    // 更新選擇器膠囊
     const pillContainer = document.getElementById('pillContainer');
     pillContainer.innerHTML = tours.map(t => {
       const isSel = selectedIds.includes(t.id);
@@ -636,7 +897,6 @@
       `;
     }).join('');
 
-    // 更新卡片上的勾選按鈕
     tours.forEach(t => {
       const isSel = selectedIds.includes(t.id);
       const cardEl = document.querySelector(`.tour-card[data-tour="${t.id}"]`);
@@ -648,7 +908,6 @@
       }
     });
 
-    // 更新底部浮動列
     const floatingText = document.getElementById('floatingText');
     const btnGoDual = document.getElementById('btnGoDual');
     if (selectedIds.length === 2) {
@@ -669,10 +928,13 @@
     container.innerHTML = tours.map(t => {
       const isSel = selectedIds.includes(t.id);
       return `
-      <div class="tour-card ${isSel ? 'checked-card' : ''}" data-tour="${t.id}">
+      <div class="tour-card ${isSel ? 'checked-card' : ''}" data-tour="${t.id}" data-region="${t.region}">
         <div class="card-header">
           <div class="badge-row">
-            <span class="badge ${t.badgeClass}">${t.badge}</span>
+            <div class="badge-group">
+              <span class="badge ${t.badgeClass}">${t.badge}</span>
+              <span class="badge badge-region">${t.region}</span>
+            </div>
             <button class="compare-toggle-btn ${isSel ? 'active' : ''}" id="cardBtn_${t.id}" onclick="toggleSelectTour('${t.id}')">
               ${isSel ? '✓ 已加入並排' : '+ 勾選PK'}
             </button>
@@ -691,7 +953,7 @@
         </div>
 
         <div class="info-block" data-searchable>
-          <div class="info-label">💰 團費與方案</div>
+          <div class="info-label">💰 團費與定位</div>
           <ul>${t.priceDetail.map(i => `<li>${i}</li>`).join('')}</ul>
         </div>
 
@@ -718,7 +980,7 @@
   function renderPKView() {
     const categories = [
       { key: 'flight', title: '✈️ 航班與出發日期比一比', field: 'flight' },
-      { key: 'price', title: '💰 團費與包含方案比一比', field: 'priceDetail' },
+      { key: 'price', title: '💰 團費與定位比一比', field: 'priceDetail' },
       { key: 'itinerary', title: '🗺️ 行程路線與景點比一比', field: 'itinerary' },
       { key: 'hotel', title: '🏨 飯店住宿規格比一比', field: 'hotel' },
       { key: 'food', title: '🍽️ 特色餐飲安排比一比', field: 'food' }
@@ -728,10 +990,10 @@
       <div class="pk-section" data-pk="${cat.key}">
         <div class="pk-title">${cat.title}</div>
         ${tours.map(t => `
-          <div class="pk-item" data-searchable>
+          <div class="pk-item" data-region="${t.region}" data-searchable>
             <div class="pk-tour-name">
               <span>${t.shortName}</span>
-              <span style="color:#dc2626;">${t.price}</span>
+              <span style="color:#dc2626; flex-shrink:0;">${t.price}</span>
             </div>
             <ul class="pk-content">
               ${t[cat.field].map(i => `<li>${i}</li>`).join('')}
@@ -821,17 +1083,32 @@
     document.getElementById('pkChips').classList.toggle('hidden', mode !== 'pk');
     document.getElementById('dualSelectorBox').classList.toggle('hidden', mode !== 'dual');
 
-    // 在並排模式下隱藏底部浮動列，避免遮擋
     document.getElementById('floatingBar').classList.toggle('hidden', mode === 'dual');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function filterTour(id, btn) {
+    activeTourFilter = id;
     document.querySelectorAll('#tourChips .chip').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const regionVal = document.getElementById('regionFilter').value;
+
+    // 篩選卡片
     document.querySelectorAll('.tour-card').forEach(card => {
-      card.style.display = (id === 'all' || card.dataset.tour === id) ? '' : 'none';
+      const matchTour = (activeTourFilter === 'all' || card.dataset.tour === activeTourFilter);
+      const matchRegion = (regionVal === 'all' || card.dataset.region === regionVal);
+      card.style.display = (matchTour && matchRegion) ? '' : 'none';
+    });
+
+    // 篩選 PK 列表項目
+    document.querySelectorAll('.pk-item').forEach(item => {
+      const matchRegion = (regionVal === 'all' || item.dataset.region === regionVal);
+      item.style.display = matchRegion ? '' : 'none';
     });
   }
 
@@ -858,6 +1135,7 @@
     });
   }
 
+  initChipsAndSources();
   renderTourCards();
   renderPKView();
   updateSelectionUI();
