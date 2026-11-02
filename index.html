@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2027 奧捷10日旅遊 - 手機比較版 (支援雙團並排對決)</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --primary: #1e3a8a;
+      --primary-light: #eff6ff;
+      --accent: #0284c7;
+      --price: #dc2626;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --ci-bg: #fce7f3;
+      --ci-text: #9d174d;
+      --jx-bg: #fef3c7;
+      --jx-text: #92400e;
+      --success: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 85px;
+    }
+    .app-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    /* 頂部標題區 */
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      color: #fff;
+      padding: 18px 16px 14px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+    header h1 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+    header p { font-size: 0.8rem; color: #cbd5e1; }
+
+    /* 置頂控制面板 */
+    .sticky-controls {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(241, 245, 249, 0.96);
+      backdrop-filter: blur(8px);
+      padding: 10px 12px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.15fr;
+      background: #e2e8f0;
+      padding: 3px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      gap: 2px;
+    }
+    .mode-btn {
+      border: none;
+      background: transparent;
+      padding: 7px 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .mode-btn.active {
+      background: var(--card);
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      background: var(--card);
+      margin-bottom: 8px;
+    }
+    /* 橫向滑動快速標籤 */
+    .chip-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .chip-scroll::-webkit-scrollbar { display: none; }
+    .chip {
+      flex: 0 0 auto;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* 2團並排選擇器面板 */
+    .compare-selector-box {
+      background: var(--card);
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+    }
+    .selector-hint {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .selector-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .check-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+      transition: 0.15s;
+    }
+    .check-pill.selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 800;
+    }
+    .check-pill .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1.5px solid #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      background: #fff;
+    }
+    .check-pill.selected .dot {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* 內容區 */
+    .content-area { padding: 12px; }
+
+    /* 卡片樣式 */
+    .tour-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1.5px solid var(--border);
+      transition: 0.2s;
+    }
+    .tour-card.checked-card {
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.12);
+    }
+    .card-header {
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-ci { background: var(--ci-bg); color: var(--ci-text); }
+    .badge-jx { background: var(--jx-bg); color: var(--jx-text); }
+    
+    .compare-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1.5px solid var(--primary);
+      background: #fff;
+      color: var(--primary);
+      cursor: pointer;
+    }
+    .compare-toggle-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .tour-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .tour-code { font-size: 0.76rem; color: var(--muted); font-family: monospace; margin-bottom: 6px; }
+    .price-row { display: flex; align-items: baseline; gap: 8px; }
+    .price-main { font-size: 1.2rem; font-weight: 800; color: var(--price); }
+    .price-orig { font-size: 0.76rem; color: var(--muted); text-decoration: line-through; }
+
+    /* 卡片內部維度區塊 */
+    .info-block {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      border-left: 3.5px solid var(--accent);
+    }
+    .info-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .info-block ul { padding-left: 16px; font-size: 0.85rem; }
+    .info-block li { margin-bottom: 3px; }
+
+    .btn-link {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    /* 依項目PK模式樣式 */
+    .pk-section {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+    .pk-title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--primary);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .pk-item {
+      padding: 9px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .pk-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .pk-tour-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .pk-content { font-size: 0.84rem; color: var(--text); padding-left: 16px; }
+
+    /* 雙團並排對比 (Side-by-Side 2-Column) */
+    .sbs-header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      position: sticky;
+      top: 138px;
+      z-index: 90;
+    }
+    .sbs-top-card {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2);
+    }
+    .sbs-top-card .sbs-name {
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .sbs-top-card .sbs-price {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fde047;
+    }
+    .sbs-top-card .sbs-code {
+      font-size: 0.68rem;
+      color: #cbd5e1;
+      font-family: monospace;
+    }
+    .sbs-row-card {
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .sbs-row-title {
+      background: #e2e8f0;
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 6px 12px;
+      text-align: center;
+    }
+    .sbs-two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      divide-x: 1px solid var(--border);
+    }
+    .sbs-col {
+      padding: 10px;
+      font-size: 0.8rem;
+      border-right: 1px solid var(--border);
+    }
+    .sbs-col:last-child { border-right: none; }
+    .sbs-col ul { padding-left: 14px; }
+    .sbs-col li { margin-bottom: 4px; }
+
+    /* 底部浮動對比提示列 */
+    .floating-compare-bar {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 560px;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 200;
+    }
+    .floating-info {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .floating-info span { color: #38bdf8; font-weight: 800; }
+    .floating-actions { display: flex; gap: 6px; }
+    .btn-go-compare {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-go-compare:disabled {
+      background: #475569;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .btn-clear {
+      background: transparent;
+      color: #cbd5e1;
+      border: 1px solid #475569;
+      padding: 7px 9px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* 資料來源區 */
+    .source-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 12px;
+      border: 1px solid var(--border);
+    }
+    .source-card h3 { font-size: 0.9rem; color: var(--primary); margin-bottom: 8px; }
+    .source-card ol { padding-left: 18px; font-size: 0.76rem; color: var(--muted); }
+    .source-card li { margin-bottom: 6px; word-break: break-all; }
+    .source-card a { color: var(--accent); text-decoration: none; }
+
+    .highlight { background-color: #fef08a !important; border-radius: 4px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <h1>2027 奧捷／捷克 10日遊比較</h1>
+    <p>手機直式版｜支援勾選 2 團並排 PK、單團卡片與維度總覽</p>
+  </header>
+
+  <div class="sticky-controls">
+    <div class="mode-switch">
+      <button class="mode-btn active" id="btnModeTour" onclick="switchMode('tour')">依行程看 (5團)</button>
+      <button class="mode-btn" id="btnModePK" onclick="switchMode('pk')">依項目比 (全部)</button>
+      <button class="mode-btn" id="btnModeDual" onclick="switchMode('dual')">⚖️ 雙團並排 (<span id="dualCountBadge">2</span>/2)</button>
+    </div>
+
+    <input type="text" class="search-input" id="searchInput" placeholder="輸入關鍵字高亮 (例: 國王湖、四季、米其林)..." oninput="runSearch()">
+
+    <!-- 依行程模式的快速跳轉列 -->
+    <div class="chip-scroll" id="tourChips">
+      <button class="chip active" onclick="filterTour('all', this)">全部 (5)</button>
+      <button class="chip" onclick="filterTour('t1', this)">1.加利利仙境(華航)</button>
+      <button class="chip" onclick="filterTour('t2', this)">2.布拉格四季7夜</button>
+      <button class="chip" onclick="filterTour('t3', this)">3.加利利仙境(星宇)</button>
+      <button class="chip" onclick="filterTour('t4', this)">4.加利利輝煌(星宇)</button>
+      <button class="chip" onclick="filterTour('t5', this)">5.雄獅星歐洲(星宇)</button>
+    </div>
+
+    <!-- 依項目PK模式的分類篩選列 -->
+    <div class="chip-scroll hidden" id="pkChips">
+      <button class="chip active" onclick="filterPK('all', this)">全部維度</button>
+      <button class="chip" onclick="filterPK('flight', this)">✈️ 航班與日期</button>
+      <button class="chip" onclick="filterPK('price', this)">💰 團費與方案</button>
+      <button class="chip" onclick="filterPK('itinerary', this)">🗺️ 行程路線</button>
+      <button class="chip" onclick="filterPK('hotel', this)">🏨 飯店住宿</button>
+      <button class="chip" onclick="filterPK('food', this)">🍽️ 特色餐飲</button>
+    </div>
+
+    <!-- 雙團並排模式的勾選開關面板 -->
+    <div class="compare-selector-box hidden" id="dualSelectorBox">
+      <div class="selector-hint">
+        <span>請勾選任意 2 個行程進行左右並排比較：</span>
+        <span id="selectorStatusText">已選 2 / 2 團</span>
+      </div>
+      <div class="selector-grid" id="pillContainer"></div>
+    </div>
+  </div>
+
+  <!-- 模式一：依行程看 (垂直卡片) -->
+  <div class="content-area" id="viewTour"></div>
+
+  <!-- 模式二：依項目比 (5團維度PK) -->
+  <div class="content-area hidden" id="viewPK"></div>
+
+  <!-- 模式三：勾選 2 團並排對比 (Side-by-Side) -->
+  <div class="content-area hidden" id="viewDual"></div>
+
+  <div class="source-card">
+    <h3>網頁資料來源註記</h3>
+    <ol>
+      <li>加利利 仙境10日(華航) AUP10270627C：<a href="https://www.galilee.com.tw/aup10_s_2/AUP10270627C" target="_blank">https://www.galilee.com.tw/aup10_s_2/AUP10270627C</a></li>
+      <li>加利利 布拉格四季10日 PRG10270618J：<a href="https://www.galilee.com.tw/prg10_f_1/PRG10270618J" target="_blank">https://www.galilee.com.tw/prg10_f_1/PRG10270618J</a></li>
+      <li>加利利 仙境10日(星宇) AUP10270618J：<a href="https://www.galilee.com.tw/aup10_s_2/AUP10270618J" target="_blank">https://www.galilee.com.tw/aup10_s_2/AUP10270618J</a></li>
+      <li>加利利 輝煌10日(星宇) AUP10270609J：<a href="https://www.galilee.com.tw/aup10_s_jx_1/AUP10270609J" target="_blank">https://www.galilee.com.tw/aup10_s_jx_1/AUP10270609J</a></li>
+      <li>雄獅 遇見星歐洲奧捷10日 27EE623JXP-T：<a href="https://travel.liontravel.com/detail?NormGroupID=94c2730e-04e3-4d27-9c69-5d001e3d30d1&GroupID=27EE623JXP-T&TourSource=Lion&Platform=APP" target="_blank">https://travel.liontravel.com/detail?NormGroupID=94c2730e-04e3-4d27-9c69-5d001e3d30d1&GroupID=27EE623JXP-T&TourSource=Lion&Platform=APP</a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- 底部浮動並排比較狀態列 -->
+<div class="floating-compare-bar" id="floatingBar">
+  <div class="floating-info" id="floatingText">
+    已勾選 <span>2 / 2</span> 個行程
+  </div>
+  <div class="floating-actions">
+    <button class="btn-clear" onclick="clearCompareSelection()">重選</button>
+    <button class="btn-go-compare" id="btnGoDual" onclick="switchMode('dual')">並排對決 ➔</button>
+  </div>
+</div>
+
+<script>
+  const tours = [
+    {
+      id: 't1',
+      pillLabel: '1.仙境(華航)',
+      shortName: '1. 加利利｜仙境10日(華航)',
+      title: '加利利｜奧捷仙境10日【印象系列】',
+      code: 'AUP10270627C',
+      badge: '中華航空直飛',
+      badgeClass: 'badge-ci',
+      price: 'NT$ 126,900',
+      origPrice: '原價 132,900',
+      flight: ['2027/06/27(日)～07/06(二)', '中華航空 (CI) 直飛維也納/布拉格，免轉機'],
+      priceDetail: ['特惠團 126,900 元（訂金 20,000 元）', '含雙首都舊城五星連泊與特色餐飲'],
+      itinerary: ['捷克：金色布拉格（古堡區、查理大橋、老城廣場）、庫倫洛夫', '奧地利：維也納首都巡禮、哈斯達特湖區仙境', '強調雙首都深度停留與自由活動時間'],
+      hotel: ['布拉格＋維也納「雙首都舊城區 5星飯店連泊」', '免去頻繁換宿，下樓即享古城夜景'],
+      food: ['布拉格「跳舞房子景觀餐廳」精緻料理', '奧捷雙國地方風味名菜與精選西式饗宴'],
+      url: 'https://www.galilee.com.tw/aup10_s_2/AUP10270627C'
+    },
+    {
+      id: 't2',
+      pillLabel: '2.布拉格四季',
+      shortName: '2. 加利利｜布拉格四季10日',
+      title: '加利利｜捷克布拉格四季飯店7夜10日',
+      code: 'PRG10270618J',
+      badge: '星宇時段/機票自理',
+      badgeClass: 'badge-jx',
+      price: 'NT$ 99,900',
+      origPrice: '原價 103,900 (不含機票)',
+      flight: ['2027/06/18(五)～06/27(日)', '機票自理方案（推薦搭配星宇直飛布拉格，適合哩程換票或自購商務艙）'],
+      priceDetail: ['特惠團 99,900 元（機票自理，訂金 20,000 元）', '預算集中於連住7晚全球頂級四季飯店'],
+      itinerary: ['純捷克單國深度慢遊，免跨國長途拉車', '布拉格古皇宮城堡區、查理大橋（距飯店僅300秒步程）、天文鐘', '庫倫洛夫紅頂小鎮、庫特納霍拉銀礦小鎮'],
+      hotel: ['布拉格四季飯店 (Four Seasons Prague) 7夜連泊', '富比士5星＆AAA 5鑽最高榮譽，步行5分鐘上查理大橋'],
+      food: ['四季飯店內尊貴饗宴（賞首都河畔市容）', '跳舞房子景觀餐廳、道地捷克烤鴨、波西米亞豬腳佐啤酒'],
+      url: 'https://www.galilee.com.tw/prg10_f_1/PRG10270618J'
+    },
+    {
+      id: 't3',
+      pillLabel: '3.仙境(星宇)',
+      shortName: '3. 加利利｜仙境10日(星宇)',
+      title: '加利利｜奧捷仙境10日【印象系列】',
+      code: 'AUP10270618J',
+      badge: '星宇航空直飛',
+      badgeClass: 'badge-jx',
+      price: 'NT$ 116,900～126,900',
+      origPrice: '原價 125,900～132,900',
+      flight: ['2027/06/18(五)～06/27(日)', '星宇航空 (JX) 直飛布拉格，可提前60日洽詢加價升等商務艙'],
+      priceDetail: ['依仙境夏季星宇班次定價（訂金 20,000 元）', '兼具星宇新機體驗與雙首都五星連泊'],
+      itinerary: ['與 06/27 華航團同屬【仙境10日】雙首都慢遊架構', '捷克：布拉格深度連泊、庫倫洛夫', '奧地利：維也納、哈斯達特湖區仙境'],
+      hotel: ['布拉格＋維也納「雙首都舊城區 5星飯店連泊」', '位於舊城精華地段，逛街與夜拍極便利'],
+      food: ['布拉格「跳舞房子景觀餐廳」精緻料理', '奧捷雙國地方風味名菜與精選西式饗宴'],
+      url: 'https://www.galilee.com.tw/aup10_s_2/AUP10270618J'
+    },
+    {
+      id: 't4',
+      pillLabel: '4.輝煌(星宇)',
+      shortName: '4. 加利利｜輝煌10日(星宇)',
+      title: '加利利｜奧捷輝煌10日【臻選系列】',
+      code: 'AUP10270609J',
+      badge: '星宇航空直飛',
+      badgeClass: 'badge-jx',
+      price: 'NT$ 129,900',
+      origPrice: '原價 135,900',
+      flight: ['2027/06/09(三)～06/18(五)', '星宇航空 (JX) 直飛布拉格，可加價升等商務艙'],
+      priceDetail: ['特惠團 129,900 元（訂金 20,000 元）', '臻選系列：涵蓋德奧捷三國湖區與名城'],
+      itinerary: ['德國：跨入德南遊覽絕美「國王湖 (Königssee)」', '奧地利：哈斯達特仙境、維也納首都巡禮', '捷克：金色布拉格、庫倫洛夫'],
+      hotel: ['布拉格奢雅飯店連泊', '搭配奧地利湖區及維也納精選飯店住宿'],
+      food: ['奧捷經典地方料理與湖區鮮魚風味餐', '布拉格精選景觀或名廚西式饗宴'],
+      url: 'https://www.galilee.com.tw/aup10_s_jx_1/AUP10270609J'
+    },
+    {
+      id: 't5',
+      pillLabel: '5.雄獅(星宇)',
+      shortName: '5. 雄獅｜遇見星歐洲10日',
+      title: '雄獅｜遇見星歐洲奧捷10日 (國王湖上下湖)',
+      code: '27EE623JXP-T',
+      badge: '星宇航空直飛',
+      badgeClass: 'badge-jx',
+      price: 'NT$ 107,900 起',
+      origPrice: '高CP值全包式聯營團',
+      flight: ['2027/06/23(三) 出發 (共10天)', '星宇航空桃園直飛布拉格 (去13h10m/回11h45m)，可加3.5萬起升等豪經艙'],
+      priceDetail: ['售價 107,900 元起', '含導覽耳機、行李束帶、轉接頭及豐富門票船票'],
+      itinerary: ['囊括19個景點、8個世界遺產', '德國國王湖（上下湖漫遊＋遊船）、古老鹽礦（小火車+溜滑梯+木船）', '哈爾斯塔特（含天空步道）、維也納雙宮殿（熊布朗宮22房+貝爾維第宮）、布拉格遊船'],
+      hotel: ['布拉格老城徒步區五星飯店（連泊2晚）', '薩爾斯甘瑪格特湖區飯店（1晚）＋四至五星精選'],
+      food: ['查理士橋畔餐廳（2012-2017長年米其林推薦西餐）', '中世紀風味晚宴、湖區鱒魚料理、三種肉類拼盤(雞/豬/牛)'],
+      url: 'https://travel.liontravel.com/detail?NormGroupID=94c2730e-04e3-4d27-9c69-5d001e3d30d1&GroupID=27EE623JXP-T&TourSource=Lion&Platform=APP'
+    }
+  ];
+
+  // 預設勾選第 3 團 (加利利仙境星宇) 與 第 5 團 (雄獅星宇) 方便直接預覽並排效果
+  let selectedIds = ['t3', 't5'];
+  let currentMode = 'tour';
+
+  function toggleSelectTour(id) {
+    const idx = selectedIds.indexOf(id);
+    if (idx > -1) {
+      selectedIds.splice(idx, 1);
+    } else {
+      if (selectedIds.length >= 2) {
+        // 若已滿2個，自動替換最早選的那個，讓單手操作更順暢
+        selectedIds.shift();
+      }
+      selectedIds.push(id);
+    }
+    updateSelectionUI();
+  }
+
+  function clearCompareSelection() {
+    selectedIds = [];
+    updateSelectionUI();
+  }
+
+  function updateSelectionUI() {
+    // 更新頂部徽章與文字
+    document.getElementById('dualCountBadge').innerText = selectedIds.length;
+    document.getElementById('selectorStatusText').innerText = `已選 ${selectedIds.length} / 2 團`;
+
+    // 更新選擇器膠囊
+    const pillContainer = document.getElementById('pillContainer');
+    pillContainer.innerHTML = tours.map(t => {
+      const isSel = selectedIds.includes(t.id);
+      return `
+        <div class="check-pill ${isSel ? 'selected' : ''}" onclick="toggleSelectTour('${t.id}')">
+          <span class="dot">${isSel ? '✓' : ''}</span>
+          <span>${t.pillLabel}</span>
+        </div>
+      `;
+    }).join('');
+
+    // 更新卡片上的勾選按鈕
+    tours.forEach(t => {
+      const isSel = selectedIds.includes(t.id);
+      const cardEl = document.querySelector(`.tour-card[data-tour="${t.id}"]`);
+      const btnEl = document.getElementById(`cardBtn_${t.id}`);
+      if (cardEl) cardEl.classList.toggle('checked-card', isSel);
+      if (btnEl) {
+        btnEl.classList.toggle('active', isSel);
+        btnEl.innerHTML = isSel ? '✓ 已加入並排' : '+ 勾選PK';
+      }
+    });
+
+    // 更新底部浮動列
+    const floatingText = document.getElementById('floatingText');
+    const btnGoDual = document.getElementById('btnGoDual');
+    if (selectedIds.length === 2) {
+      const names = selectedIds.map(id => tours.find(x => x.id === id).pillLabel).join(' vs ');
+      floatingText.innerHTML = `對決：<span>${names}</span>`;
+      btnGoDual.disabled = false;
+    } else {
+      floatingText.innerHTML = `已勾選 <span>${selectedIds.length} / 2</span> 團 (請選滿2團)`;
+      btnGoDual.disabled = true;
+    }
+
+    renderDualView();
+    runSearch();
+  }
+
+  function renderTourCards() {
+    const container = document.getElementById('viewTour');
+    container.innerHTML = tours.map(t => {
+      const isSel = selectedIds.includes(t.id);
+      return `
+      <div class="tour-card ${isSel ? 'checked-card' : ''}" data-tour="${t.id}">
+        <div class="card-header">
+          <div class="badge-row">
+            <span class="badge ${t.badgeClass}">${t.badge}</span>
+            <button class="compare-toggle-btn ${isSel ? 'active' : ''}" id="cardBtn_${t.id}" onclick="toggleSelectTour('${t.id}')">
+              ${isSel ? '✓ 已加入並排' : '+ 勾選PK'}
+            </button>
+          </div>
+          <div class="tour-title">${t.title}</div>
+          <div class="tour-code">團號: ${t.code}</div>
+          <div class="price-row">
+            <span class="price-main">${t.price}</span>
+            <span class="price-orig">${t.origPrice}</span>
+          </div>
+        </div>
+
+        <div class="info-block" data-searchable>
+          <div class="info-label">✈️ 航班與日期</div>
+          <ul>${t.flight.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+
+        <div class="info-block" data-searchable>
+          <div class="info-label">💰 團費與方案</div>
+          <ul>${t.priceDetail.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+
+        <div class="info-block" data-searchable>
+          <div class="info-label">🗺️ 行程重點</div>
+          <ul>${t.itinerary.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+
+        <div class="info-block" data-searchable>
+          <div class="info-label">🏨 飯店住宿</div>
+          <ul>${t.hotel.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+
+        <div class="info-block" data-searchable>
+          <div class="info-label">🍽️ 特色餐飲</div>
+          <ul>${t.food.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+
+        <a class="btn-link" href="${t.url}" target="_blank">查看官方詳細行程 ➔</a>
+      </div>
+    `}).join('');
+  }
+
+  function renderPKView() {
+    const categories = [
+      { key: 'flight', title: '✈️ 航班與出發日期比一比', field: 'flight' },
+      { key: 'price', title: '💰 團費與包含方案比一比', field: 'priceDetail' },
+      { key: 'itinerary', title: '🗺️ 行程路線與景點比一比', field: 'itinerary' },
+      { key: 'hotel', title: '🏨 飯店住宿規格比一比', field: 'hotel' },
+      { key: 'food', title: '🍽️ 特色餐飲安排比一比', field: 'food' }
+    ];
+    const container = document.getElementById('viewPK');
+    container.innerHTML = categories.map(cat => `
+      <div class="pk-section" data-pk="${cat.key}">
+        <div class="pk-title">${cat.title}</div>
+        ${tours.map(t => `
+          <div class="pk-item" data-searchable>
+            <div class="pk-tour-name">
+              <span>${t.shortName}</span>
+              <span style="color:#dc2626;">${t.price}</span>
+            </div>
+            <ul class="pk-content">
+              ${t[cat.field].map(i => `<li>${i}</li>`).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  function renderDualView() {
+    const container = document.getElementById('viewDual');
+    if (selectedIds.length < 2) {
+      container.innerHTML = `
+        <div style="background:#fff; border-radius:14px; padding:28px 16px; text-align:center; border:1px dashed #94a3b8;">
+          <p style="font-size:1rem; font-weight:800; color:#1e3a8a; margin-bottom:6px;">尚未選滿 2 個行程</p>
+          <p style="font-size:0.84rem; color:#64748b;">請在上方標籤列點選任意 2 個行程，即可在此左右並排對決！</p>
+        </div>
+      `;
+      return;
+    }
+
+    const tA = tours.find(x => x.id === selectedIds[0]);
+    const tB = tours.find(x => x.id === selectedIds[1]);
+
+    const rows = [
+      { label: '✈️ 航班與出發日期', field: 'flight' },
+      { label: '💰 團費與方案內容', field: 'priceDetail' },
+      { label: '🗺️ 行程路線與景點', field: 'itinerary' },
+      { label: '🏨 飯店住宿規格', field: 'hotel' },
+      { label: '🍽️ 特色餐飲安排', field: 'food' }
+    ];
+
+    container.innerHTML = `
+      <div class="sbs-header-grid">
+        <div class="sbs-top-card">
+          <div class="sbs-name">${tA.shortName}</div>
+          <div class="sbs-price">${tA.price}</div>
+          <div class="sbs-code">${tA.code} (${tA.badge})</div>
+        </div>
+        <div class="sbs-top-card">
+          <div class="sbs-name">${tB.shortName}</div>
+          <div class="sbs-price">${tB.price}</div>
+          <div class="sbs-code">${tB.code} (${tB.badge})</div>
+        </div>
+      </div>
+
+      ${rows.map(r => `
+        <div class="sbs-row-card">
+          <div class="sbs-row-title">${r.label}</div>
+          <div class="sbs-two-cols">
+            <div class="sbs-col" data-searchable>
+              <ul>${tA[r.field].map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>
+            <div class="sbs-col" data-searchable>
+              <ul>${tB[r.field].map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="sbs-row-card">
+        <div class="sbs-row-title">🔗 官方行程連結</div>
+        <div class="sbs-two-cols">
+          <div class="sbs-col">
+            <a class="btn-link" style="margin-top:0; font-size:0.78rem; padding:7px;" href="${tA.url}" target="_blank">前往官網 ➔</a>
+          </div>
+          <div class="sbs-col">
+            <a class="btn-link" style="margin-top:0; font-size:0.78rem; padding:7px;" href="${tB.url}" target="_blank">前往官網 ➔</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById('btnModeTour').classList.toggle('active', mode === 'tour');
+    document.getElementById('btnModePK').classList.toggle('active', mode === 'pk');
+    document.getElementById('btnModeDual').classList.toggle('active', mode === 'dual');
+
+    document.getElementById('viewTour').classList.toggle('hidden', mode !== 'tour');
+    document.getElementById('viewPK').classList.toggle('hidden', mode !== 'pk');
+    document.getElementById('viewDual').classList.toggle('hidden', mode !== 'dual');
+
+    document.getElementById('tourChips').classList.toggle('hidden', mode !== 'tour');
+    document.getElementById('pkChips').classList.toggle('hidden', mode !== 'pk');
+    document.getElementById('dualSelectorBox').classList.toggle('hidden', mode !== 'dual');
+
+    // 在並排模式下隱藏底部浮動列，避免遮擋
+    document.getElementById('floatingBar').classList.toggle('hidden', mode === 'dual');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function filterTour(id, btn) {
+    document.querySelectorAll('#tourChips .chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tour-card').forEach(card => {
+      card.style.display = (id === 'all' || card.dataset.tour === id) ? '' : 'none';
+    });
+  }
+
+  function filterPK(key, btn) {
+    document.querySelectorAll('#pkChips .chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.pk-section').forEach(sec => {
+      sec.style.display = (key === 'all' || sec.dataset.pk === key) ? '' : 'none';
+    });
+  }
+
+  function runSearch() {
+    const kw = document.getElementById('searchInput').value.trim().toLowerCase();
+    document.querySelectorAll('[data-searchable]').forEach(el => {
+      if (!kw) {
+        el.classList.remove('highlight');
+        return;
+      }
+      if (el.innerText.toLowerCase().includes(kw)) {
+        el.classList.add('highlight');
+      } else {
+        el.classList.remove('highlight');
+      }
+    });
+  }
+
+  renderTourCards();
+  renderPKView();
+  updateSelectionUI();
+</script>
+
+</body>
+</html>
